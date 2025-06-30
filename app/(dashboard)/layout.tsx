@@ -1,5 +1,7 @@
+"use client"
+
 import type React from "react"
-import { Inter } from "next/font/google"
+
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { UserNav } from "@/components/user-nav"
@@ -10,32 +12,29 @@ import { AccountsProvider } from "@/contexts/accounts-context"
 import { ExpenseTemplatesProvider } from "@/contexts/expense-templates-context"
 import { GoalsProvider } from "@/contexts/goals-context"
 
-const inter = Inter({ subsets: ["latin"] })
-
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <LanguageProvider>
         <SettingsProvider>
           <AccountsProvider>
             <ExpenseTemplatesProvider>
               <GoalsProvider>
-                <div className="flex min-h-screen flex-col">
-                  <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-                    <div className="container flex h-14 items-center">
-                      <MainNav />
-                      <MobileNav />
-                      <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-                        <div className="w-full flex-1 md:w-auto md:flex-none">{/* Search can be added here */}</div>
+                <div className="min-h-screen bg-background">
+                  <div className="border-b">
+                    <div className="flex h-16 items-center px-4">
+                      <MainNav className="mx-6" />
+                      <div className="ml-auto flex items-center space-x-4">
                         <UserNav />
                       </div>
                     </div>
-                  </header>
-                  <main className="flex-1">{children}</main>
+                  </div>
+                  <main className="flex-1 space-y-4 p-8 pt-6">{children}</main>
+                  <MobileNav />
                 </div>
               </GoalsProvider>
             </ExpenseTemplatesProvider>
