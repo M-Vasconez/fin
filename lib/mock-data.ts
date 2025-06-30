@@ -11,6 +11,7 @@ export const mockTransactions = [
     category: "Salary",
     type: "income",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: undefined, // No file for income
   },
   {
     id: "2",
@@ -20,6 +21,7 @@ export const mockTransactions = [
     category: "Housing",
     type: "expense",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: "/placeholder.pdf", // Example PDF
   },
   {
     id: "3",
@@ -29,6 +31,7 @@ export const mockTransactions = [
     category: "Food",
     type: "expense",
     paymentMethod: "debit_card" as PaymentMethod,
+    fileUrl: "/placeholder.jpg", // Example JPG
   },
   {
     id: "4",
@@ -38,6 +41,7 @@ export const mockTransactions = [
     category: "Freelance",
     type: "income",
     paymentMethod: "digital_wallet" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "5",
@@ -47,6 +51,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: "/placeholder.pdf",
   },
   {
     id: "6",
@@ -56,6 +61,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "7",
@@ -65,6 +71,7 @@ export const mockTransactions = [
     category: "Entertainment",
     type: "expense",
     paymentMethod: "cash" as PaymentMethod,
+    fileUrl: "/placeholder.png", // Example PNG
   },
 
   // February 2024
@@ -76,6 +83,7 @@ export const mockTransactions = [
     category: "Salary",
     type: "income",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "9",
@@ -85,6 +93,7 @@ export const mockTransactions = [
     category: "Housing",
     type: "expense",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "10",
@@ -94,6 +103,7 @@ export const mockTransactions = [
     category: "Food",
     type: "expense",
     paymentMethod: "debit_card" as PaymentMethod,
+    fileUrl: "/placeholder.jpg",
   },
   {
     id: "11",
@@ -103,6 +113,7 @@ export const mockTransactions = [
     category: "Freelance",
     type: "income",
     paymentMethod: "check" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "12",
@@ -112,6 +123,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "13",
@@ -121,6 +133,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "14",
@@ -130,6 +143,7 @@ export const mockTransactions = [
     category: "Entertainment",
     type: "expense",
     paymentMethod: "debit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
 
   // March 2024
@@ -141,6 +155,7 @@ export const mockTransactions = [
     category: "Salary",
     type: "income",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "16",
@@ -150,6 +165,7 @@ export const mockTransactions = [
     category: "Housing",
     type: "expense",
     paymentMethod: "bank_transfer" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "17",
@@ -159,6 +175,7 @@ export const mockTransactions = [
     category: "Food",
     type: "expense",
     paymentMethod: "cash" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "18",
@@ -168,6 +185,7 @@ export const mockTransactions = [
     category: "Freelance",
     type: "income",
     paymentMethod: "digital_wallet" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "19",
@@ -177,6 +195,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "20",
@@ -186,6 +205,7 @@ export const mockTransactions = [
     category: "Utilities",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "21",
@@ -195,6 +215,7 @@ export const mockTransactions = [
     category: "Entertainment",
     type: "expense",
     paymentMethod: "debit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
 
   // Recent days (for today/last 7 days filters)
@@ -206,6 +227,7 @@ export const mockTransactions = [
     category: "Food",
     type: "expense",
     paymentMethod: "cash" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "23",
@@ -215,6 +237,7 @@ export const mockTransactions = [
     category: "Freelance",
     type: "income",
     paymentMethod: "digital_wallet" as PaymentMethod,
+    fileUrl: undefined,
   },
   {
     id: "24",
@@ -224,10 +247,11 @@ export const mockTransactions = [
     category: "Transportation",
     type: "expense",
     paymentMethod: "credit_card" as PaymentMethod,
+    fileUrl: undefined,
   },
 ]
 
-export type Transaction = (typeof mockTransactions)[0]
+export type Transaction = (typeof mockTransactions)[0] & { fileUrl?: string }
 
 export function replaceAllTransactions(newTransactions: Transaction[]) {
   // In a real app, this would update the database
