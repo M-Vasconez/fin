@@ -71,6 +71,16 @@ export const translations = {
     positiveSavings: "Positive savings",
     spendingMoreThanEarning: "Spending more than earning",
 
+    // Account balance overview
+    totalAssets: "Total Assets",
+    totalDebts: "Total Debts",
+    netWorth: "Net Worth",
+    totalAccounts: "Total Accounts",
+    acrossAllAccounts: "across all accounts",
+    creditCardBalances: "credit card balances",
+    assetsMinusDebts: "assets minus debts",
+    activeAccounts: "active accounts",
+
     // Date filters
     thisYear: "This Year",
     thisMonth: "This Month",
@@ -297,6 +307,16 @@ export const translations = {
     transactions: "transacciones",
     positiveSavings: "Ahorros positivos",
     spendingMoreThanEarning: "Gastando más de lo que ganas",
+
+    // Resumen de balance de cuentas
+    totalAssets: "Activos Totales",
+    totalDebts: "Deudas Totales",
+    netWorth: "Patrimonio Neto",
+    totalAccounts: "Total de Cuentas",
+    acrossAllAccounts: "en todas las cuentas",
+    creditCardBalances: "saldos de tarjetas de crédito",
+    assetsMinusDebts: "activos menos deudas",
+    activeAccounts: "cuentas activas",
 
     // Filtros de fecha
     thisYear: "Este Año",

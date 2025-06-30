@@ -1,12 +1,16 @@
 import type React from "react"
+import { Inter } from "next/font/google"
 import { MainNav } from "@/components/main-nav"
 import { MobileNav } from "@/components/mobile-nav"
 import { UserNav } from "@/components/user-nav"
+import { ThemeProvider } from "@/components/theme-provider"
+import { LanguageProvider } from "@/contexts/language-context"
+import { SettingsProvider } from "@/contexts/settings-context"
 import { AccountsProvider } from "@/contexts/accounts-context"
 import { ExpenseTemplatesProvider } from "@/contexts/expense-templates-context"
 import { GoalsProvider } from "@/contexts/goals-context"
-import { LanguageProvider } from "@/contexts/language-context"
-import { SettingsProvider } from "@/contexts/settings-context"
+
+const inter = Inter({ subsets: ["latin"] })
 
 export default function DashboardLayout({
   children,
@@ -14,32 +18,30 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <LanguageProvider>
-      <SettingsProvider>
-        <AccountsProvider>
-          <ExpenseTemplatesProvider>
-            <GoalsProvider>
-              <div className="min-h-screen bg-background">
-                {/* Desktop Navigation */}
-                <div className="hidden md:flex h-16 items-center px-4 border-b">
-                  <MainNav className="mx-6" />
-                  <div className="ml-auto flex items-center space-x-4">
-                    <UserNav />
-                  </div>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <LanguageProvider>
+        <SettingsProvider>
+          <AccountsProvider>
+            <ExpenseTemplatesProvider>
+              <GoalsProvider>
+                <div className="flex min-h-screen flex-col">
+                  <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                    <div className="container flex h-14 items-center">
+                      <MainNav />
+                      <MobileNav />
+                      <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+                        <div className="w-full flex-1 md:w-auto md:flex-none">{/* Search can be added here */}</div>
+                        <UserNav />
+                      </div>
+                    </div>
+                  </header>
+                  <main className="flex-1">{children}</main>
                 </div>
-
-                {/* Mobile Navigation */}
-                <div className="md:hidden">
-                  <MobileNav />
-                </div>
-
-                {/* Main Content */}
-                <main className="flex-1">{children}</main>
-              </div>
-            </GoalsProvider>
-          </ExpenseTemplatesProvider>
-        </AccountsProvider>
-      </SettingsProvider>
-    </LanguageProvider>
+              </GoalsProvider>
+            </ExpenseTemplatesProvider>
+          </AccountsProvider>
+        </SettingsProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   )
 }
