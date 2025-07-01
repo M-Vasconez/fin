@@ -38,7 +38,7 @@ export function ExpenseTable() {
             <TableHead>{t("description")}</TableHead>
             <TableHead>{t("category")}</TableHead>
             <TableHead>{t("paymentMethod")}</TableHead>
-            <TableHead>{t("file")}</TableHead> {/* New column for file */}
+            <TableHead>{t("file")}</TableHead>
             <TableHead className="text-right">{t("amount")}</TableHead>
             <TableHead className="text-right">{t("actions")}</TableHead>
           </TableRow>
@@ -47,8 +47,6 @@ export function ExpenseTable() {
           {expenses.length === 0 ? (
             <TableRow>
               <TableCell colSpan={7} className="h-24 text-center">
-                {" "}
-                {/* Updated colspan */}
                 {t("noExpenseEntries")}
               </TableCell>
             </TableRow>
@@ -60,8 +58,7 @@ export function ExpenseTable() {
                   <TableCell>{formatDate(entry.date)}</TableCell>
                   <TableCell>{entry.description}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{t(entry.category.toLowerCase() as any)}</Badge>{" "}
-                    {/* Added translation for category */}
+                    <Badge variant="outline">{t(entry.category.toLowerCase() as any)}</Badge>
                   </TableCell>
                   <TableCell>
                     {paymentMethod && (
