@@ -1,118 +1,181 @@
 "use client"
 
 import { useState } from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { EditIcon, TrashIcon, FileTextIcon, ImageIcon } from "lucide-react" // Added FileTextIcon and ImageIcon
-import { EditExpenseForm } from "@/components/edit-expense-form"
-import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { EditExpenseForm } from "./edit-expense-form"
+import { DeleteConfirmationDialog } from "./delete-confirmation-dialog"
 import { useLanguage } from "@/contexts/language-context"
 import { useSettings } from "@/contexts/settings-context"
-import { getPaymentMethodById } from "@/lib/payment-methods"
-import { mockTransactions, type Transaction } from "@/lib/mock-data" // Import mockTransactions and Transaction type
+import { formatDate } from "@/lib/date-utils"
+import { Pencil, Trash2, Search, FileText, ImageIcon, ExternalLink } from "lucide-react"
 
-// Filter mockTransactions to only include expenses
-const expenseData: Transaction[] = mockTransactions.filter((transaction) => transaction.type === "expense")
+interface Expense {
+  id: string
+  date: string
+  description: string
+  amount: number
+  category: string
+  paymentMethod: string
+  fileUrl?: string
+  fileName?: string
+  fileType?: string
+}
 
-export function ExpenseTable() {
-  const [expenses] = useState(expenseData)
+interface ExpenseTableProps {
+  expenses: Expense[]
+  onEdit: (expense: Expense) => void
+  onDelete: (id: string) => void
+}
+
+export function ExpenseTable({ expenses, onEdit, onDelete }: ExpenseTableProps) {
   const { t } = useLanguage()
-  const { formatCurrency, formatDate } = useSettings()
+  const { settings } = useSettings()
+  const [searchTerm, setSearchTerm] = useState("")
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null)
+  const [deletingExpenseId, setDeletingExpenseId] = useState<string | null>(null)
 
-  const getFileIcon = (fileUrl: string) => {
-    if (fileUrl.endsWith(".pdf")) {
-      return <FileTextIcon className="h-4 w-4" />
-    } else if (fileUrl.endsWith(".jpg") || fileUrl.endsWith(".png")) {
-      return <ImageIcon className="h-4 w-4" />
+  const filteredExpenses = expenses.filter(
+    (expense) =>
+      expense.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      expense.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      expense.paymentMethod.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const handleEdit = (expense: Expense) => {
+    setEditingExpense(expense)
+  }
+
+  const handleSaveEdit = (updatedExpense: Expense) => {
+    onEdit(updatedExpense)
+    setEditingExpense(null)
+  }
+
+  const handleDelete = (id: string) => {
+    setDeletingExpenseId(id)
+  }
+
+  const confirmDelete = () => {
+    if (deletingExpenseId) {
+      onDelete(deletingExpenseId)
+      setDeletingExpenseId(null)
     }
-    return null // Or a generic file icon
+  }
+
+  const getFileIcon = (fileType?: string) => {
+    if (!fileType) return null
+
+    if (fileType.includes("pdf")) {
+      return <FileText className="h-4 w-4 text-red-600" />
+    } else if (fileType.includes("image")) {
+      return <ImageIcon className="h-4 w-4 text-blue-600" />
+    }
+    return <FileText className="h-4 w-4 text-gray-600" />
+  }
+
+  const openFile = (fileUrl: string) => {
+    window.open(fileUrl, "_blank")
   }
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{t("date")}</TableHead>
-            <TableHead>{t("description")}</TableHead>
-            <TableHead>{t("category")}</TableHead>
-            <TableHead>{t("paymentMethod")}</TableHead>
-            <TableHead>{t("file")}</TableHead>
-            <TableHead className="text-right">{t("amount")}</TableHead>
-            <TableHead className="text-right">{t("actions")}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {expenses.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center">
-                {t("noExpenseEntries")}
-              </TableCell>
-            </TableRow>
+    <Card>
+      <CardHeader>
+        <CardTitle>{t("expenseEntries")}</CardTitle>
+        <CardDescription>{t("manageExpenses")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <div className="flex items-center space-x-2">
+            <Search className="h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={`${t("search")}...`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="max-w-sm"
+            />
+          </div>
+
+          {filteredExpenses.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">{t("noExpenseEntries")}</div>
           ) : (
-            expenses.map((entry) => {
-              const paymentMethod = getPaymentMethodById(entry.paymentMethod)
-              return (
-                <TableRow key={entry.id}>
-                  <TableCell>{formatDate(entry.date)}</TableCell>
-                  <TableCell>{entry.description}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{t(entry.category.toLowerCase() as any)}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    {paymentMethod && (
-                      <div className="flex items-center gap-2">
-                        <span>{paymentMethod.icon}</span>
-                        <span className="text-sm">{t(paymentMethod.name as any)}</span>
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {" "}
-                    {/* New cell for file */}
-                    {entry.fileUrl ? (
-                      <a
-                        href={entry.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-blue-600 hover:underline"
-                        title={t("viewFile")}
-                      >
-                        {getFileIcon(entry.fileUrl)}
-                        <span className="sr-only">{t("viewFile")}</span>
-                      </a>
-                    ) : (
-                      <span className="text-muted-foreground">{t("noFile")}</span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right font-medium text-rose-600">{formatCurrency(entry.amount)}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <EditExpenseForm expense={entry}>
-                        <Button variant="ghost" size="icon">
-                          <EditIcon className="h-4 w-4" />
-                          <span className="sr-only">{t("edit")}</span>
-                        </Button>
-                      </EditExpenseForm>
-                      <DeleteConfirmationDialog
-                        title={t("deleteExpenseEntry")}
-                        description={t("deleteExpenseConfirm")}
-                        onConfirm={() => {}}
-                      >
-                        <Button variant="ghost" size="icon">
-                          <TrashIcon className="h-4 w-4" />
-                          <span className="sr-only">{t("delete")}</span>
-                        </Button>
-                      </DeleteConfirmationDialog>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )
-            })
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("date")}</TableHead>
+                    <TableHead>{t("description")}</TableHead>
+                    <TableHead>{t("category")}</TableHead>
+                    <TableHead>{t("paymentMethod")}</TableHead>
+                    <TableHead className="text-right">{t("amount")}</TableHead>
+                    <TableHead>{t("file")}</TableHead>
+                    <TableHead className="text-right">{t("actions")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredExpenses.map((expense) => (
+                    <TableRow key={expense.id}>
+                      <TableCell className="font-medium">{formatDate(expense.date, settings.dateFormat)}</TableCell>
+                      <TableCell>{expense.description}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{t(expense.category)}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{t(expense.paymentMethod)}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-medium">
+                        {settings.currency} {expense.amount.toFixed(2)}
+                      </TableCell>
+                      <TableCell>
+                        {expense.fileUrl ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openFile(expense.fileUrl!)}
+                            className="flex items-center gap-2"
+                          >
+                            {getFileIcon(expense.fileType)}
+                            <ExternalLink className="h-3 w-3" />
+                            <span className="sr-only">{t("viewFile")}</span>
+                          </Button>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">{t("noFile")}</span>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end space-x-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(expense)}>
+                            <Pencil className="h-4 w-4" />
+                            <span className="sr-only">{t("edit")}</span>
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDelete(expense.id)}>
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">{t("delete")}</span>
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           )}
-        </TableBody>
-      </Table>
-    </div>
+        </div>
+      </CardContent>
+
+      {editingExpense && (
+        <EditExpenseForm expense={editingExpense} onSave={handleSaveEdit} onCancel={() => setEditingExpense(null)} />
+      )}
+
+      <DeleteConfirmationDialog
+        isOpen={!!deletingExpenseId}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeletingExpenseId(null)}
+        title={t("deleteExpenseEntry")}
+        description={t("deleteExpenseConfirm")}
+      />
+    </Card>
   )
 }

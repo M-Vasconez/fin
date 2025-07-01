@@ -40,9 +40,10 @@ export const translations = {
     pickDate: "Pick a date",
     viewAll: "View All",
     templates: "Templates",
-    file: "File", // New translation
-    viewFile: "View File", // New translation
-    noFile: "No File", // New translation
+    search: "Search",
+    file: "File",
+    viewFile: "View File",
+    noFile: "No File",
 
     // Expense Categories
     housing: "Housing",
@@ -244,9 +245,10 @@ export const translations = {
     pickDate: "Selecciona una fecha",
     viewAll: "Ver Todo",
     templates: "Plantillas",
-    file: "Archivo", // New translation
-    viewFile: "Ver Archivo", // New translation
-    noFile: "Sin Archivo", // New translation
+    search: "Buscar",
+    file: "Archivo",
+    viewFile: "Ver Archivo",
+    noFile: "Sin Archivo",
 
     // Expense Categories
     housing: "Vivienda",
